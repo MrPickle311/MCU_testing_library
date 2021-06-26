@@ -9,19 +9,25 @@
 
 //generic
 
+void __send_txt(const char __memx* txt)
+{
+	TEST_SEND_TXT(txt);
+	TEST_SEND_BYTE('\0');
+}
+
 void uartSendGlobalCommand(enum GlobalCommand cmd)
 {
-	TEST_UART_SEND_BYTE(cmd);
+	TEST_SEND_BYTE(cmd);
 }
 
 void uartSendTestCaseCommand(enum TestCaseCommand cmd)
 {
-	TEST_UART_SEND_BYTE(cmd);
+	TEST_SEND_BYTE(cmd);
 }
 
 void uartSendText(const char __memx* txt)
 {
-	TEST_UART_SEND_TXT(txt);
+	TEST_SEND_TXT(txt);
 }
 
 byte_t __get_nth_byte_of_data(void* data_source , uint8_t byte_nmbr)
@@ -32,7 +38,7 @@ byte_t __get_nth_byte_of_data(void* data_source , uint8_t byte_nmbr)
 void __send_array(byte_t* array , uint8_t size)
 {
 	for_N( byte_nmbr , size )
-		TEST_UART_SEND_BYTE(array[byte_nmbr]);
+		TEST_SEND_BYTE(array[byte_nmbr]);
 }
 
 void uartSendData(void* data_source , uint8_t data_size)
@@ -60,7 +66,7 @@ void uartSendExpressionName(const char __memx* name)
 void uartSendTypeDescriptor(enum TypeDescriptor descriptor)
 {
 	uartSendTestCaseCommand(SENDING_TYPE_DESCRIPTOR);
-	TEST_UART_SEND_BYTE(descriptor);
+	TEST_SEND_BYTE(descriptor);
 }
 
 void uartSendCurrentValue(void* current_value , uint8_t value_size)
@@ -78,7 +84,7 @@ void uartSendExpectedValue(void* expected_value , uint8_t value_size)
 void uartSendTestResult(bool is_passed)
 {
 	uartSendTestCaseCommand(SENDING_TEST_RESULT);
-	TEST_UART_SEND_BYTE(is_passed);
+	TEST_SEND_BYTE(is_passed);
 }
 
 void uartSendLineNumber(uint16_t line_nmbr)

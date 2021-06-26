@@ -8,8 +8,9 @@
 #include "../../drivers/core/bit_utils.h"
 #include "../../drivers/core/global_utils.h"
 
-#define TEST_UART_SEND_TXT(txt_ptr)	
-#define TEST_UART_SEND_BYTE(byte)	
+//any interface 
+#define TEST_SEND_TXT(txt_ptr)	//without sending '\0'
+#define TEST_SEND_BYTE(byte)	
 
 enum GlobalCommand{ START					 = 0 ,
 					SENDING_TEST_CASE        = 1 ,
