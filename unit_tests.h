@@ -18,6 +18,8 @@
 #define TEST_UART_SEND_BYTE(byte)	
 #define TEST_UART_GET_BYTE()		
 
+#define START_CODE
+
 /////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -108,7 +110,7 @@ bool checkCondition(bool condition);
 
 #define TEST_INIT()\
 		while(1)\
-			if(TEST_UART_GET_BYTE() == 0x33)\
+			if(TEST_UART_GET_BYTE() == START_CODE)\
 				break;\
 		uartSendGlobalCommand(START)
 
