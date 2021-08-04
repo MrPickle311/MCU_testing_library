@@ -56,6 +56,13 @@ define three functions. For example
 
 # Usage
 
+1. Declare test case by TEST_CASE(name) macro
+2. Write tests code. 
+#### Warning! Be careful about types!
+3. At the begining place TEST_INIT() macro
+4. Place EXAMINE_TEST_CASE(name) to run test case.
+5. At the end place TEST_PROTOCOL_END() macro
+
 There is example of usage:
 
 ```
@@ -83,6 +90,7 @@ TEST_CASE(test1)
 	uint16_t reg = 0b10000000;
 	EXPECT_BIT_SET(reg,7);//exptect bit set at 7'th place
 
+	// check that pointer is NULL
 	uint16_t* ptr = NULL;
 	EXPECT_NULL(ptr);//passed
 
