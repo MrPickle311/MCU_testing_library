@@ -5,21 +5,28 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "../../drivers/core/bit_utils.h"
-#include "../../drivers/core/global_utils.h"
+#include "bit_utils.h"
+#include "global_utils.h"
+#include "usart.h"
 
-//any interface 
-#define TEST_SEND_TXT(txt_ptr)	//without sending '\0'
-#define TEST_SEND_BYTE(byte)	
+#ifndef TEST_UART_SEND_TXT
+	#error("You must define function which sends text to uart (send text without '\0'))
+
+#ifndef TEST_UART_SEND_BYTE
+	#error("You must define function which sends bytes to uart 
 
 enum GlobalCommand{ START					 = 0 ,
 					SENDING_TEST_CASE        = 1 ,
-					SENDING_UNIT_TEST_RESULT = 2 ,
-					END_SENDING_TEST_CASE    = 3 ,
-					END_ENTIRE_TRANSACTION   = 4 };
+					END_ENTIRE_TRANSACTION   = 2 };
+					
+enum TestCaseCommand { SENDING_UNIT_TEST_RESULT = 0 ,
+					   END_SENDING_TEST_CASE    = 1};
 
-enum TestCaseCommand{ SENDING_NAME					= 0 ,
-                      SENDING_TYPE_DESCRIPTOR		= 1 ,
+enum TestTypeCommand { SINGLE_VALUE_TEST = 0 ,
+					   RANGE_VALUE_TEST  = 1};
+
+enum UnitTestCommand{ SENDING_TYPE_DESCRIPTOR 		= 0 ,
+                      SENDING_NAME					= 1 ,
                       SENDING_CURRENT_VALUE			= 2 ,
                       SENDING_EXPECTED_VALUE		= 3 ,
                       SENDING_TEST_RESULT			= 4 ,
@@ -49,6 +56,10 @@ enum TypeDescriptor{ UINT8_T  = 0  ,
 void uartSendGlobalCommand(enum GlobalCommand cmd);
 
 void uartSendTestCaseCommand(enum TestCaseCommand cmd);
+
+void uartSendTestTypeCommand(enum TestTypeCommand cmd);
+
+void uartSendUnitTestCommand(enum UnitTestCommand cmd);
 
 void uartSendText(const char __memx* txt);
 
@@ -101,7 +112,7 @@ bool checkCondition(bool condition);
 		name();
 
 #define TEST_CASE_END()\
-		uartSendGlobalCommand(END_SENDING_TEST_CASE)
+		uartSendTestCaseCommand(END_SENDING_TEST_CASE)
 
 #define TEST_PROTOCOL_END()\
 		uartSendGlobalCommand(END_ENTIRE_TRANSACTION)
@@ -139,6 +150,7 @@ bool checkCondition(bool condition);
 
 #define NULL_BODY( expression , expected , operator )\
 		uartSendUnitTestResultHeader( PSTR( #expression ) , PTR );\
+		uartSendCurrentValue( expression , PTR_SIZE);\
 		uartSendExpectedValue( expected , PTR_SIZE );\
 		uartSendTestResult( checkCondition( expression operator NULL ) );\
 		uartTerminateSendingUnitTestResult()
@@ -268,6 +280,7 @@ bool checkCondition(bool condition);
 
 #define BIT_BODY(expression , expected , bit_nmbr , EXPECTED_STATE_CHECKER )\
 		uartSendUnitTestResultHeader( PSTR( #expression ) , BIT );\
+		uartSendCurrentValue( &(uint8_t){IS_BIT_SET_AT( expression , bit_nmbr )} , BIT_SIZE );\
 		uartSendExpectedValue( &(uint8_t){expected} , BIT_SIZE );\
 		uartSendTestResult( checkCondition( EXPECTED_STATE_CHECKER( expression , bit_nmbr ) ) );\
 		uartTerminateSendingUnitTestResult()
