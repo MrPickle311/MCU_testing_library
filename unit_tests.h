@@ -7,13 +7,19 @@
 #include <stdint.h>
 #include "bit_utils.h"
 #include "global_utils.h"
-#include "usart.h"
 
-#ifndef TEST_UART_SEND_TXT
-	#error("You must define function which sends text to uart (send text without '\0'))
+/////////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEST_UART_SEND_BYTE
-	#error("You must define function which sends bytes to uart 
+// add include to your usart library
+#include 
+
+// in these definitions place your usart functions
+#define TEST_UART_SEND_TXT(txt_ptr)	
+#define TEST_UART_SEND_BYTE(byte)	
+#define TEST_UART_GET_BYTE()		
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
 
 enum GlobalCommand{ START					 = 0 ,
 					SENDING_TEST_CASE        = 1 ,
@@ -101,6 +107,9 @@ bool checkCondition(bool condition);
 
 
 #define TEST_INIT()\
+		while(1)\
+			if(TEST_UART_GET_BYTE() == 0x33)\
+				break;\
 		uartSendGlobalCommand(START)
 
 #define TEST_CASE(name)\
